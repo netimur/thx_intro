@@ -12,13 +12,9 @@ import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -43,15 +39,18 @@ import kotlin.random.Random
 import androidx.compose.ui.graphics.Color as ComposeColor
 
 class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val soundPool = SoundPool.Builder()
+    private val soundPool: SoundPool? = try {
+        SoundPool.Builder()
             .setMaxStreams(5)
             .build()
+    } catch (_: Exception) {
+        null
+    }
 
-        val soundId = soundPool.load(this, R.raw.thx, 1)
-
-        soundPool.setOnLoadCompleteListener { _, sampleId, status ->
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val soundId = soundPool?.load(this, R.raw.thx, 1)
+        soundPool?.setOnLoadCompleteListener { _, sampleId, status ->
             if (status == 0 && sampleId == soundId) {
                 soundPool.play(
                     soundId,

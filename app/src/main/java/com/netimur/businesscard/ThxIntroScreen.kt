@@ -122,7 +122,7 @@ fun ThxIntroScreen(started: Boolean, onRepeat: () -> Unit) {
                 startPadding = Random.nextInt(from = 0, until = screenWidthPx.toInt())
                     .toFloat(),
                 y = Random.nextInt(from = 0, until = screenHeightPx.toInt()).toFloat(),
-                speed = Random.nextInt(from = 4000, until = 8000)
+                speed = Random.nextInt(from = 7000, until = 8000)
             )
         }
 
@@ -215,7 +215,7 @@ fun ThxIntroScreen(started: Boolean, onRepeat: () -> Unit) {
             val tracking = 50.dp.toPx()
 
             val hBarHeight = 5.dp.toPx()
-            val hStemWidth = 10.dp.toPx()
+            val hStemWidth = 12.dp.toPx()
 
             val tBarHeight = 7.dp.toPx()
             val hBarLength = 50.dp.toPx()
@@ -315,7 +315,7 @@ fun ThxIntroScreen(started: Boolean, onRepeat: () -> Unit) {
                     )
                 }
 
-                val tStemWidth = 10.dp.toPx()
+                val tStemWidth = 12.dp.toPx()
                 val tStemStartX = center.x - hBarLength / 2 - hStemWidth -
                         tracking - tStemWidth
 
@@ -348,7 +348,7 @@ fun ThxIntroScreen(started: Boolean, onRepeat: () -> Unit) {
                 val xLetterWidth = 50.dp.toPx()
                 val leftBarTopStartX = center.x + hBarLength / 2 + tracking
                 val topY = hLeftStemTopY
-                val barWidth = 10.dp.toPx()
+                val barWidth = 12.dp.toPx()
                 val rightBarBottomEndX = leftBarTopStartX + barWidth * 2 + xLetterWidth
                 val bottomY = hLeftStemBottomY
 

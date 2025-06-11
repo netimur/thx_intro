@@ -1,11 +1,21 @@
 package com.netimur.businesscard
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class MainViewModel : ViewModel() {
-    private val _restartEvent = MutableSharedFlow<Boolean>()
-    val restartEvent: SharedFlow<Boolean> = _restartEvent.asSharedFlow()
+    private val _started = MutableStateFlow(false)
+    val started = _started.asStateFlow()
+
+    init {
+        repeat()
+    }
+
+    fun repeat() {
+        _started.update {
+            true
+        }
+    }
 }

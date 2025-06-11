@@ -105,18 +105,20 @@ class MainActivity : ComponentActivity() {
                         },
                 ) { innerPadding ->
                     val screenWidthPx = screenWidthPx()
-                    val metalGradient = Brush.horizontalGradient(
-                        colors = listOf(
-                            Color(0xFF2A2A2A),  // тёмный
-                            Color(0xFFAAAAAA),  // светлый
-                            Color(0xFF2A2A2A),   // тёмный
-                            Color(0xFFE0E0E0),  // бликовый
-                            Color(0xFFAAAAAA),  // светлый
-                            Color(0xFF2A2A2A)   // тёмный
-                        ),
-                        startX = 0F,
-                        endX = screenWidthPx
-                    )
+                    val metalGradient = remember {
+                        Brush.horizontalGradient(
+                            colors = listOf(
+                                Color(0xFF2A2A2A),  // тёмный
+                                Color(0xFFAAAAAA),  // светлый
+                                Color(0xFF2A2A2A),   // тёмный
+                                Color(0xFFE0E0E0),  // бликовый
+                                Color(0xFFAAAAAA),  // светлый
+                                Color(0xFF2A2A2A)   // тёмный
+                            ),
+                            startX = 0F,
+                            endX = screenWidthPx
+                        )
+                    }
                     val paddingHorizontal = 130F
 
                     val light1X = remember {

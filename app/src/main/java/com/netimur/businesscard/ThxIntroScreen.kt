@@ -468,7 +468,8 @@ fun ThxIntroScreen(started: Boolean, onRepeat: () -> Unit) {
                                 ),
                                 center = center,
                                 radius = 50F
-                            )
+                            ),
+                            blendMode = BlendMode.Lighten
                         )
                     }
                 }

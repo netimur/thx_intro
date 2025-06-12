@@ -47,6 +47,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.abs
@@ -67,15 +68,6 @@ fun BlackWhiteVaporwaveScreen() {
             repeatMode = RepeatMode.Reverse
         )
     )
-
-    /* val degrees = infiniteTransition.animateFloat(
-         initialValue = -3F,
-         targetValue = 3F,
-         animationSpec = infiniteRepeatable(
-             animation = tween(durationMillis = 2000, easing = FastOutSlowInEasing),
-             repeatMode = RepeatMode.Reverse
-         )
-     )*/
 
     val GradientBlack = listOf(
         Color(0xFF0A0A0A), // глубокий чёрный
@@ -107,6 +99,9 @@ fun BlackWhiteVaporwaveScreen() {
         val anim = remember {
             mutableStateOf("diamond")
         }
+        var rotationJob = remember {
+            mutableStateOf<Job?>(null)
+        }
         GifWebView(
             anim = anim.value,
             modifier = Modifier
@@ -123,7 +118,7 @@ fun BlackWhiteVaporwaveScreen() {
                         },
                         onDragEnd = { },
                         onDragCancel = {},
-                        onDrag = { pointerInputChange, offset ->
+                        onDrag = onDrag@{ pointerInputChange, offset ->
                             val direction = when {
                                 offset.x > 0 -> SwipeDirection.RIGHT
                                 offset.x < 0 -> SwipeDirection.LEFT
@@ -132,52 +127,57 @@ fun BlackWhiteVaporwaveScreen() {
                                 else -> null
                             }
 
-                            coroutineScope.launch {
-                                launch {
-                                    delay(500L)
-                                    val animation = anims.random()
-                                    if (animation == "flashbacks") {
-                                        anims.remove("flashbacks")
+                            if (rotationJob.value?.isActive == true) {
+                                return@onDrag
+                            } else {
+                                rotationJob.value = coroutineScope.launch {
+                                    launch {
+                                        delay(500L)
+                                        val animation = anims.random()
+                                        if (animation == "flashbacks") {
+                                            anims.remove("flashbacks")
+                                        }
+                                        anim.value = animation
                                     }
-                                    anim.value = animation
-                                }
-                                launch {
-                                    alpha.animateTo(
-                                        0.0f,
-                                        animationSpec = tween(500)
-                                    )
-                                    alpha.animateTo(
-                                        1f,
-                                        animationSpec = tween(500)
-                                    )
-                                }
-                                launch {
-                                    val anim: AnimationSpec<Float> =
-                                        tween(1000, easing = LinearOutSlowInEasing)
-                                    when (direction) {
-                                        SwipeDirection.UP -> {
-                                            rotationX.animateTo(720F, animationSpec = anim)
-                                        }
-
-                                        SwipeDirection.DOWN -> {
-                                            rotationX.animateTo(-720F, anim)
-                                        }
-
-                                        SwipeDirection.LEFT -> {
-                                            rotationY.animateTo(-720F, anim)
-                                        }
-
-                                        SwipeDirection.RIGHT -> {
-                                            rotationY.animateTo(720F, anim)
-                                        }
-
-                                        null -> {}
+                                    launch {
+                                        alpha.animateTo(
+                                            0.0f,
+                                            animationSpec = tween(500)
+                                        )
+                                        alpha.animateTo(
+                                            1f,
+                                            animationSpec = tween(500)
+                                        )
                                     }
+                                    launch {
+                                        val anim: AnimationSpec<Float> =
+                                            tween(1000, easing = LinearOutSlowInEasing)
+                                        when (direction) {
+                                            SwipeDirection.UP -> {
+                                                rotationX.animateTo(720F, animationSpec = anim)
+                                            }
 
-                                    rotationY.snapTo(0f)
-                                    rotationX.snapTo(0f)
+                                            SwipeDirection.DOWN -> {
+                                                rotationX.animateTo(-720F, anim)
+                                            }
+
+                                            SwipeDirection.LEFT -> {
+                                                rotationY.animateTo(-720F, anim)
+                                            }
+
+                                            SwipeDirection.RIGHT -> {
+                                                rotationY.animateTo(720F, anim)
+                                            }
+
+                                            null -> {}
+                                        }
+
+                                        rotationY.snapTo(0f)
+                                        rotationX.snapTo(0f)
+                                    }
                                 }
                             }
+
                         }
                     )
                 }

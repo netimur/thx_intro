@@ -1,20 +1,18 @@
 package com.netimur.businesscard
 
+import android.media.MediaPlayer
 import android.media.SoundPool
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 
 class MainActivity : ComponentActivity() {
     private val soundPool: SoundPool? = try {
@@ -25,24 +23,34 @@ class MainActivity : ComponentActivity() {
         null
     }
 
+    var isFlashbacksLoaded: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewModel = MainViewModel()
-        val soundId = soundPool?.load(this, R.raw.thx, 1)
+        val flashbacksSoundId = soundPool?.load(this, R.raw.flashbacks_mp3, 1)
         soundPool?.setOnLoadCompleteListener { _, sampleId, status ->
-            if (status == 0 && sampleId == soundId) {
-                soundPool.play(
-                    soundId,
-                    1f, 1f,
-                    0, 0,
-                    1f
-                )
+            if (status == 0 && sampleId == flashbacksSoundId) {
+                isFlashbacksLoaded = true
             }
         }
         enableEdgeToEdge()
 
         setContent {
-            BlackWhiteVaporwaveScreen()
+            val mediaPlayer = remember {
+                MediaPlayer.create(this, R.raw.flashbacks_mp3)
+            }
+
+            BlackWhiteVaporwaveScreen(
+                playFlashbacks = {
+                    if (!mediaPlayer.isPlaying) {
+                        mediaPlayer.start()
+                    }
+                },
+                stopFlashbacks = {
+                    mediaPlayer?.release()
+                }
+            )
             /*val started = viewModel.started.collectAsStateWithLifecycle(
                 minActiveState = Lifecycle.State.RESUMED,
                 context = Dispatchers.Main.immediate + SupervisorJob(),

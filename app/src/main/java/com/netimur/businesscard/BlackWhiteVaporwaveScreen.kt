@@ -58,7 +58,7 @@ import kotlin.random.Random
 typealias Position = Animatable<Float, AnimationVector1D>
 
 @Composable
-fun BlackWhiteVaporwaveScreen() {
+fun BlackWhiteVaporwaveScreen(playFlashbacks: () -> Unit, stopFlashbacks: () -> Unit) {
     val infiniteTransition = rememberInfiniteTransition()
     val outermostRadius = infiniteTransition.animateFloat(
         initialValue = 500F,
@@ -132,9 +132,13 @@ fun BlackWhiteVaporwaveScreen() {
                             } else {
                                 rotationJob.value = coroutineScope.launch {
                                     launch {
+                                        if (anim.value == "flashbacks") {
+                                            stopFlashbacks()
+                                        }
                                         delay(500L)
                                         val animation = anims.random()
                                         if (animation == "flashbacks") {
+                                            playFlashbacks()
                                             anims.remove("flashbacks")
                                         }
                                         anim.value = animation

@@ -42,12 +42,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            val started = viewModel.started.collectAsStateWithLifecycle(
+            BlackWhiteVaporwaveScreen()
+            /*val started = viewModel.started.collectAsStateWithLifecycle(
                 minActiveState = Lifecycle.State.RESUMED,
                 context = Dispatchers.Main.immediate + SupervisorJob(),
                 initialValue = false
             )
-            ThxIntroScreen(started.value, onRepeat = viewModel::repeat)
+            ThxIntroScreen(started.value, onRepeat = viewModel::repeat)*/
         }
     }
 }

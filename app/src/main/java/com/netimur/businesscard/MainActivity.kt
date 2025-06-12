@@ -72,6 +72,9 @@ fun DrawScope.runDraw(
 }
 
 @Composable
+fun screenHeight(): Dp = with(LocalConfiguration.current) { this.screenHeightDp.dp }
+
+@Composable
 fun screenWidth(): Dp = with(LocalConfiguration.current) { this.screenWidthDp.dp }
 
 @Composable

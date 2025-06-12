@@ -1,5 +1,8 @@
 package com.netimur.businesscard
 
+import android.graphics.Paint
+import android.graphics.PathMeasure
+import android.graphics.Typeface
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
@@ -26,6 +29,8 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.asAndroidPath
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.dp
 import com.netimur.businesscard.runDraw
 import kotlinx.coroutines.delay
@@ -474,6 +479,33 @@ fun ThxIntroScreen(started: Boolean, onRepeat: () -> Unit) {
                     }
                 }
             }
+
+            val text = "DIGITALLY MASTERED"
+            val paint = Paint().apply {
+                color = android.graphics.Color.WHITE
+                textSize = 60f
+                isAntiAlias = true
+                style = Paint.Style.FILL
+                textAlign = Paint.Align.LEFT // важно, именно LEFT
+                typeface = Typeface.DEFAULT_BOLD
+            }
+
+            val path = Path().apply {
+                val y = baselineBottomRight.y + 25.dp.toPx()
+                moveTo(0f, y)
+                lineTo(size.width, y)
+            }.asAndroidPath()
+            val textWidth = paint.measureText(text)
+            val pathLength = PathMeasure(path, false).length
+            val hOffset = (pathLength - textWidth) / 2f
+
+            drawContext.canvas.nativeCanvas.drawTextOnPath(
+                text,
+                path,
+                hOffset,
+                0f,
+                paint
+            )
         }
     }
 }

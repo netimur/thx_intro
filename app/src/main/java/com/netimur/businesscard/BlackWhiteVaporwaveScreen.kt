@@ -482,34 +482,6 @@ data class StaticStar(
     val twinkleSeed: Float
 )
 
-@Composable
-fun GifWebView(modifier: Modifier, anim: String) {
-    key(anim) {
-        AndroidView(
-            factory = { context ->
-                WebView(context).apply {
-                    settings.javaScriptEnabled = true
-                    loadDataWithBaseURL(
-                        null,
-                        """
-                    <html>
-                        <body style="margin:0; padding:0; background:transparent;">
-                            <img src="file:///android_res/raw/${anim}.gif" style="width:100%; height:auto;" />
-                        </body>
-                    </html>
-                    """.trimIndent(),
-                        "text/html",
-                        "utf-8",
-                        null
-                    )
-                    setBackgroundColor(0x00000000)
-                }
-            },
-            modifier = modifier
-        )
-    }
-}
-
 private val anims = listOf(
     "smile",
     "balance"

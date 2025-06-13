@@ -12,7 +12,9 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,6 +37,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Job
@@ -188,14 +191,38 @@ fun BlackWhiteVaporwaveScreen() {
             )
         )
 
+        val clickOffset = remember {
+            mutableStateOf<Offset?>(null)
+        }
+
         Canvas(
             modifier = Modifier
                 .fillMaxSize()
                 .systemBarsPadding()
+                .pointerInput(Unit) {
+                    awaitPointerEventScope {
+                        while (true) {
+                            val down = awaitFirstDown()
+                            clickOffset.value = down.position
+                            down.consume()
+                            waitForUpOrCancellation()
+                            clickOffset.value = null
+                        }
+                    }
+                }
         ) {
-
             runDraw(iAmDrawing = "horizontal lines") {
                 horizontalLines.forEach { line ->
+                    val distance = clickOffset.value?.let {
+                        abs(it.y - (center.y + line.yPadding))
+                    } ?: Float.MAX_VALUE
+
+                    val quadraticYPadding = if (distance < 100f) {
+                        line.quadraticYPadding + (100f - distance) * 0.3f
+                    } else {
+                        line.quadraticYPadding
+                    }
+
                     val path = Path().apply {
                         moveTo(
                             x = -100F,
@@ -203,7 +230,7 @@ fun BlackWhiteVaporwaveScreen() {
                         )
                         quadraticTo(
                             x1 = center.x,
-                            y1 = center.y + line.quadraticYPadding,
+                            y1 = center.y + quadraticYPadding,
                             x2 = size.width + 100F,
                             y2 = center.y + line.yPadding
                         )

@@ -1,10 +1,8 @@
 package com.netimur.businesscard
 
-import android.util.Log
 import android.webkit.WebView
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
-import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -21,15 +19,12 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -42,7 +37,6 @@ import androidx.compose.ui.graphics.PathOperation
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
@@ -55,10 +49,15 @@ import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.random.Random
 
-typealias Position = Animatable<Float, AnimationVector1D>
+private val gradientBlack = listOf(
+    Color(0xFF0A0A0A),
+    Color(0xFF141414),
+    Color(0xFF1E1E1E),
+    Color(0xFF121212)
+)
 
 @Composable
-fun BlackWhiteVaporwaveScreen(playFlashbacks: () -> Unit, stopFlashbacks: () -> Unit) {
+fun BlackWhiteVaporwaveScreen() {
     val infiniteTransition = rememberInfiniteTransition()
     val outermostRadius = infiniteTransition.animateFloat(
         initialValue = 500F,
@@ -69,19 +68,14 @@ fun BlackWhiteVaporwaveScreen(playFlashbacks: () -> Unit, stopFlashbacks: () -> 
         )
     )
 
-    val GradientBlack = listOf(
-        Color(0xFF0A0A0A), // глубокий чёрный
-        Color(0xFF141414), // угольный
-        Color(0xFF1E1E1E), // графитовый
-        Color(0xFF121212)  // стандартный Android dark
-    )
+
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 brush = Brush.linearGradient(
-                    colors = GradientBlack
+                    colors = gradientBlack
                 )
             )
     ) {
@@ -105,6 +99,7 @@ fun BlackWhiteVaporwaveScreen(playFlashbacks: () -> Unit, stopFlashbacks: () -> 
         GifWebView(
             anim = anim.value,
             modifier = Modifier
+                .padding(top = 50.dp)
                 .fillMaxWidth()
                 .fillMaxHeight(0.5F)
                 .graphicsLayer {
@@ -132,15 +127,8 @@ fun BlackWhiteVaporwaveScreen(playFlashbacks: () -> Unit, stopFlashbacks: () -> 
                             } else {
                                 rotationJob.value = coroutineScope.launch {
                                     launch {
-                                        if (anim.value == "flashbacks") {
-                                            stopFlashbacks()
-                                        }
                                         delay(500L)
                                         val animation = anims.random()
-                                        if (animation == "flashbacks") {
-                                            playFlashbacks()
-                                            anims.remove("flashbacks")
-                                        }
                                         anim.value = animation
                                     }
                                     launch {
@@ -320,7 +308,7 @@ fun BlackWhiteVaporwaveScreen(playFlashbacks: () -> Unit, stopFlashbacks: () -> 
                     brush = Brush.radialGradient(
                         colorStops = arrayOf(
                             0.5f to Color(0x88FFFFFF),
-                            1.0f to Color(0x00FFFFFF),      // прозрачный край
+                            1.0f to Color(0x00FFFFFF),
                         ),
                         center = center,
                         radius = radius1
@@ -345,9 +333,9 @@ fun BlackWhiteVaporwaveScreen(playFlashbacks: () -> Unit, stopFlashbacks: () -> 
                     path = result2,
                     brush = Brush.radialGradient(
                         colorStops = arrayOf(
-                            0.0f to Color.White,           // центр — ярко белый
-                            0.3f to Color(0x88FFFFFF),     // почти белый
-                            1.0f to Color(0x00FFFFFF),      // прозрачный край
+                            0.0f to Color.White,
+                            0.3f to Color(0x88FFFFFF),
+                            1.0f to Color(0x00FFFFFF),
                         ),
                         center = center,
                         radius = outermostRadius.value
@@ -513,18 +501,17 @@ fun GifWebView(modifier: Modifier, anim: String) {
                         "utf-8",
                         null
                     )
-                    setBackgroundColor(0x00000000) // Прозрачный фон
+                    setBackgroundColor(0x00000000)
                 }
             },
-            modifier = modifier // Укажи нужный размер
+            modifier = modifier
         )
     }
 }
 
-val anims = mutableSetOf(
+private val anims = listOf(
     "smile",
-    "balance",
-    "flashbacks"
+    "balance"
 )
 
 data class HorizontalLine(

@@ -1,13 +1,11 @@
 package com.netimur.businesscard
 
-import android.media.MediaPlayer
 import android.media.SoundPool
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
@@ -37,20 +35,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            val mediaPlayer = remember {
-                MediaPlayer.create(this, R.raw.flashbacks_mp3)
-            }
-
-            BlackWhiteVaporwaveScreen(
-                playFlashbacks = {
-                    if (!mediaPlayer.isPlaying) {
-                        mediaPlayer.start()
-                    }
-                },
-                stopFlashbacks = {
-                    mediaPlayer?.release()
-                }
-            )
+            BlackWhiteVaporwaveScreen()
             /*val started = viewModel.started.collectAsStateWithLifecycle(
                 minActiveState = Lifecycle.State.RESUMED,
                 context = Dispatchers.Main.immediate + SupervisorJob(),

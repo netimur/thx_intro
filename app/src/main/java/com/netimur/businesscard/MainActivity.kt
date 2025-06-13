@@ -13,13 +13,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 class MainActivity : ComponentActivity() {
-    private val soundPool: SoundPool? = try {
-        SoundPool.Builder()
-            .setMaxStreams(5)
-            .build()
-    } catch (_: Exception) {
-        null
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

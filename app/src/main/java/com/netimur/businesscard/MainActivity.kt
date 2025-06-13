@@ -21,27 +21,12 @@ class MainActivity : ComponentActivity() {
         null
     }
 
-    var isFlashbacksLoaded: Boolean = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val viewModel = MainViewModel()
-        val flashbacksSoundId = soundPool?.load(this, R.raw.flashbacks_mp3, 1)
-        soundPool?.setOnLoadCompleteListener { _, sampleId, status ->
-            if (status == 0 && sampleId == flashbacksSoundId) {
-                isFlashbacksLoaded = true
-            }
-        }
         enableEdgeToEdge()
 
         setContent {
             BlackWhiteVaporwaveScreen()
-            /*val started = viewModel.started.collectAsStateWithLifecycle(
-                minActiveState = Lifecycle.State.RESUMED,
-                context = Dispatchers.Main.immediate + SupervisorJob(),
-                initialValue = false
-            )
-            ThxIntroScreen(started.value, onRepeat = viewModel::repeat)*/
         }
     }
 }

@@ -68,8 +68,6 @@ fun BlackWhiteVaporwaveScreen() {
         )
     )
 
-
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -201,49 +199,53 @@ fun BlackWhiteVaporwaveScreen() {
                 .systemBarsPadding()
         ) {
 
-            horizontalLines.forEach { line ->
-                val path = Path().apply {
-                    moveTo(
-                        x = -100F,
-                        y = center.y + line.yPadding
-                    )
-                    quadraticTo(
-                        x1 = center.x,
-                        y1 = center.y + line.quadraticYPadding,
-                        x2 = size.width + 100F,
-                        y2 = center.y + line.yPadding
+            runDraw(iAmDrawing = "horizontal lines") {
+                horizontalLines.forEach { line ->
+                    val path = Path().apply {
+                        moveTo(
+                            x = -100F,
+                            y = center.y + line.yPadding
+                        )
+                        quadraticTo(
+                            x1 = center.x,
+                            y1 = center.y + line.quadraticYPadding,
+                            x2 = size.width + 100F,
+                            y2 = center.y + line.yPadding
+                        )
+                    }
+
+                    drawPath(
+                        path = path,
+                        color = Color.White,
+                        style = Stroke(width = line.width.toFloat())
                     )
                 }
+            }
+            runDraw(iAmDrawing = "vertical lines ") {
+                verticalLines.forEach { line ->
+                    val (xPaddingTop, xPaddingBottom) = when (line.direction) {
+                        Direction.LEFT_TO_RIGHT -> line.xPaddingTop to line.xPaddingBottom
+                        Direction.RIGHT_TO_LEFT -> -line.xPaddingTop to -line.xPaddingBottom
+                    }
 
-                drawPath(
-                    path = path,
-                    color = Color.White,
-                    style = Stroke(width = line.width.toFloat())
-                )
+                    val path = Path().apply {
+                        moveTo(
+                            x = center.x + xPaddingTop,
+                            y = center.y
+                        )
+                        lineTo(
+                            x = center.x + xPaddingBottom,
+                            y = size.height
+                        )
+                    }
+                    drawPath(
+                        path = path,
+                        color = Color.White,
+                        style = Stroke(width = 2.dp.toPx())
+                    )
+                }
             }
 
-            verticalLines.forEach { line ->
-                val (xPaddingTop, xPaddingBottom) = when (line.direction) {
-                    Direction.LEFT_TO_RIGHT -> line.xPaddingTop to line.xPaddingBottom
-                    Direction.RIGHT_TO_LEFT -> -line.xPaddingTop to -line.xPaddingBottom
-                }
-
-                val path = Path().apply {
-                    moveTo(
-                        x = center.x + xPaddingTop,
-                        y = center.y
-                    )
-                    lineTo(
-                        x = center.x + xPaddingBottom,
-                        y = size.height
-                    )
-                }
-                drawPath(
-                    path = path,
-                    color = Color.White,
-                    style = Stroke(width = 2.dp.toPx())
-                )
-            }
             val yPadding = 100F
 
             runDraw(iAmDrawing = "Center lines") {
@@ -287,7 +289,6 @@ fun BlackWhiteVaporwaveScreen() {
                     )
                 )
             }
-
             runDraw(iAmDrawing = "Sun") {
                 val center = center.copy(y = center.y - yPadding)
                 val radius1 = 200F

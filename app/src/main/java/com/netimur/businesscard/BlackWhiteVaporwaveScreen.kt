@@ -37,7 +37,6 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Job
@@ -211,38 +210,6 @@ fun BlackWhiteVaporwaveScreen() {
                     }
                 }
         ) {
-            runDraw(iAmDrawing = "horizontal lines") {
-                horizontalLines.forEach { line ->
-                    val distance = clickOffset.value?.let {
-                        abs(it.y - (center.y + line.yPadding))
-                    } ?: Float.MAX_VALUE
-
-                    val quadraticYPadding = if (distance < 100f) {
-                        line.quadraticYPadding + (100f - distance) * 0.3f
-                    } else {
-                        line.quadraticYPadding
-                    }
-
-                    val path = Path().apply {
-                        moveTo(
-                            x = -100F,
-                            y = center.y + line.yPadding
-                        )
-                        quadraticTo(
-                            x1 = center.x,
-                            y1 = center.y + quadraticYPadding,
-                            x2 = size.width + 100F,
-                            y2 = center.y + line.yPadding
-                        )
-                    }
-
-                    drawPath(
-                        path = path,
-                        color = Color.White,
-                        style = Stroke(width = line.width.toFloat())
-                    )
-                }
-            }
             runDraw(iAmDrawing = "vertical lines ") {
                 verticalLines.forEach { line ->
                     val (xPaddingTop, xPaddingBottom) = when (line.direction) {
@@ -264,6 +231,48 @@ fun BlackWhiteVaporwaveScreen() {
                         path = path,
                         color = Color.White,
                         style = Stroke(width = 2.dp.toPx())
+                    )
+                }
+            }
+            runDraw(iAmDrawing = "horizontal lines") {
+                horizontalLines.forEachIndexed { index, line ->
+                    val distance = clickOffset.value?.let {
+                        abs(it.y - (center.y + line.yPadding))
+                    } ?: Float.MAX_VALUE
+
+                    val quadraticYPadding = if (distance < 100f) {
+                        line.quadraticYPadding + (100f - distance) * 0.3f
+                    } else {
+                        line.quadraticYPadding
+                    }
+
+                    val pathStart = Offset(
+                        x = -100F,
+                        y = center.y + line.yPadding
+                    )
+
+                    val pathEnd = Offset(
+                        x = size.width + 100F,
+                        y = center.y + line.yPadding
+                    )
+
+                    val path = Path().apply {
+                        moveTo(
+                            x = pathStart.x,
+                            y = pathStart.y
+                        )
+                        quadraticTo(
+                            x1 = center.x,
+                            y1 = center.y + quadraticYPadding,
+                            x2 = pathEnd.x,
+                            y2 = pathEnd.y
+                        )
+                    }
+
+                    drawPath(
+                        path = path,
+                        color = Color.White,
+                        style = Stroke(width = line.width.toFloat())
                     )
                 }
             }
